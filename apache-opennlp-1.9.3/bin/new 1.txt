@@ -1,0 +1,121 @@
+=== Evaluation summary ===
+  Number of sentences:  21349
+    Min sentence size:      3
+    Max sentence size:   6272
+Average sentence size: 119.06
+           Tags count:      2
+             Accuracy: 97.63%
+
+<-end> Evaluation Corpus Statistics
+
+=== Detailed Accuracy By Tag ===
+
+-------------------------------------------------------------------------
+|      Tag | Errors |  Count |   % Err | Precision | Recall | F-Measure |
+-------------------------------------------------------------------------
+|  library |    505 |    716 | 0.705   | 0.995     | 0.295  | 0.455     |
+| question |      1 |  20633 | 0       | 0.976     | 1      | 0.988     |
+-------------------------------------------------------------------------
+
+<-end> Tags with the highest number of errors
+
+=== Confusion matrix ===
+
+Tags with 100% accuracy: 
+
+      a       b | Accuracy | <-- classified as
+   <211>    505 |   -100%  |     a = library
+      1  <20632>|   -100%  |     b = question
+
+<-end> Confusion matrix
+
+
+**** with attachments and reaction score ***
+Iterations=400
+Cutoff=0
+
+=== Evaluation summary ===
+  Number of sentences:  21349
+    Min sentence size:      3
+    Max sentence size:   6272
+Average sentence size: 119.23
+           Tags count:      2
+             Accuracy: 97.72%
+
+<-end> Evaluation Corpus Statistics
+
+=== Detailed Accuracy By Tag ===
+
+-------------------------------------------------------------------------
+|      Tag | Errors |  Count |   % Err | Precision | Recall | F-Measure |
+-------------------------------------------------------------------------
+|  library |    486 |    716 | 0.679   | 0.996     | 0.321  | 0.486     |
+| question |      1 |  20633 | 0       | 0.977     | 1      | 0.988     |
+-------------------------------------------------------------------------
+
+<-end> Tags with the highest number of errors
+
+=== Confusion matrix ===
+
+Tags with 100% accuracy: 
+
+      a       b | Accuracy | <-- classified as
+   <230>    486 |   -100%  |     a = library
+      1  <20632>|   -100%  |     b = question
+
+<-end> Confusion matrix
+
+**** with attachments and reaction score ***
+Iterations=2000
+Cutoff=0
+
+             Accuracy: 97.97%
+
+<-end> Evaluation Corpus Statistics
+
+=== Detailed Accuracy By Tag ===
+
+-------------------------------------------------------------------------
+|      Tag | Errors |  Count |   % Err | Precision | Recall | F-Measure |
+-------------------------------------------------------------------------
+|  library |    429 |    716 | 0.599   | 0.983     | 0.401  | 0.569     |
+| question |      5 |  20633 | 0       | 0.98      | 1      | 0.99      |
+-------------------------------------------------------------------------
+
+***
+Iterations=10000
+=== Evaluation summary ===
+  Number of sentences:  21349
+    Min sentence size:      3
+    Max sentence size:   6272
+Average sentence size: 119.23
+           Tags count:      2
+             Accuracy:  98.1%
+
+<-end> Evaluation Corpus Statistics
+
+=== Detailed Accuracy By Tag ===
+
+
+-------------------------------------------------------------------------
+|      Tag | Errors |  Count |   % Err | Precision | Recall | F-Measure |
+-------------------------------------------------------------------------
+|  library |    399 |    716 | 0.557   | 0.981     | 0.443  | 0.61      |
+| question |      6 |  20633 | 0       | 0.981     | 1      | 0.99      |
+-------------------------------------------------------------------------
+
+****************
+Without attachments and reaction score
+Iterations=2000
+             Accuracy:  97.9%
+
+<-end> Evaluation Corpus Statistics
+
+=== Detailed Accuracy By Tag ===
+
+-------------------------------------------------------------------------
+|      Tag | Errors |  Count |   % Err | Precision | Recall | F-Measure |
+-------------------------------------------------------------------------
+|  library |    444 |    716 | 0.62    | 0.982     | 0.38   | 0.548     |
+| question |      5 |  20633 | 0       | 0.979     | 1      | 0.989     |
+-------------------------------------------------------------------------

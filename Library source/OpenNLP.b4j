@@ -1,0 +1,127 @@
+﻿AppType=StandardJava
+Build1=Default,b4j.example
+Group=Default Group
+Library1=jcore
+Library2=javaobject
+Module1=OpenNLP
+NumberOfFiles=0
+NumberOfLibraries=2
+NumberOfModules=1
+Version=9.1
+@EndOfDesignText@
+'Non-UI application (console / server application)
+#Region Project Attributes 
+	#CommandLineArgs:
+	#MergeLibraries: True 
+#End Region
+'#AdditionalJar: OpenNLP\grizzly-framework-2.4.4.jar
+'#AdditionalJar: OpenNLP\grizzly-http-2.4.4.jar
+'#AdditionalJar: OpenNLP\grizzly-http-server-2.4.4.jar
+'#AdditionalJar: OpenNLP\hppc-0.7.2.jar
+'#AdditionalJar: OpenNLP\jackson-annotations-2.10.1.jar
+'#AdditionalJar: OpenNLP\jackson-core-2.10.1.jar
+'#AdditionalJar: OpenNLP\jackson-databind-2.10.1.jar
+'#AdditionalJar: OpenNLP\jackson-module-jaxb-annotations-2.10.1.jar
+'#AdditionalJar: OpenNLP\jakarta.activation-api-1.2.1.jar
+'#AdditionalJar: OpenNLP\jakarta.annotation-api-1.3.5.jar
+'#AdditionalJar: OpenNLP\jakarta.inject-2.6.1.jar
+'#AdditionalJar: OpenNLP\jakarta.validation-api-2.0.2.jar
+'#AdditionalJar: OpenNLP\jakarta.ws.rs-api-2.1.6.jar
+'#AdditionalJar: OpenNLP\jakarta.xml.bind-api-2.3.2.jar
+'#AdditionalJar: OpenNLP\jcommander-1.78.jar
+'#AdditionalJar: OpenNLP\jersey-client-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-common-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-container-grizzly2-http-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-entity-filtering-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-media-jaxb-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-media-json-jackson-2.30.1.jar
+'#AdditionalJar: OpenNLP\jersey-server-2.30.1.jar
+'#AdditionalJar: OpenNLP\morfologik-fsa-2.1.7.jar
+'#AdditionalJar: OpenNLP\morfologik-fsa-builders-2.1.7.jar
+'#AdditionalJar: OpenNLP\morfologik-stemming-2.1.7.jar
+'#AdditionalJar: OpenNLP\morfologik-tools-2.1.7.jar
+'#AdditionalJar: OpenNLP\opennlp-brat-annotator-1.9.3.jar
+'#AdditionalJar: OpenNLP\opennlp-morfologik-addon-1.9.3.jar
+#AdditionalJar: OpenNLP\opennlp-tools-1.9.3.jar
+'#AdditionalJar: OpenNLP\opennlp-uima-1.9.3.jar
+'#AdditionalJar: OpenNLP\osgi-resource-locator-1.0.3.jar
+#PackagerProperty: IncludedModules=java.xml
+Sub Process_Globals
+	
+	Private nlp As OpenNLP
+	Private Wrong As Int
+	Private Total As Int
+	Private RunningTasks As Int
+	Private ModelsFolder As String 
+End Sub
+
+Sub AppStart (Args() As String)
+	ModelsFolder = File.Combine(File.DirApp, "..\..\OpenNLPExample\Models")
+	test
+	StartMessageLoop
+End Sub
+
+Private Sub test
+	nlp.Initialize
+	TT
+	
+End Sub
+
+Private Sub TT 
+	Dim s As String = $"Rockwell International Corp. 's
+    Tulsa unit said it signed a tentative agreement
+    extending its contract with Boeing Co. to
+    provide structural parts for Boeing 's 747
+    jetliners . 
+	"$
+	Dim p As NLPParagraph = nlp.TokenizeWhitespace(Null, s)
+	
+	Dim stemmer As Object = nlp.CreateStemmer("ENGLISH")
+	Log(nlp.Stem(stemmer, "eating"))
+	Log(nlp.Stem(stemmer, "swimming"))
+	Log(nlp.Stem(stemmer, "eats"))
+	Log(nlp.Stem(stemmer, "went"))
+	Dim SentenceModel As Object = nlp.LoadModel(nlp.MODEL_SENTENCE, ModelsFolder, "opennlp-en-ud-ewt-sentence-1.0-1.9.3.bin")
+	Dim TokenizerModel As Object = nlp.LoadModel(nlp.MODEL_TOKENIZER, ModelsFolder, "opennlp-en-ud-ewt-tokens-1.0-1.9.3.bin")
+	Dim OrganizationModel As Object = nlp.LoadModel(nlp.MODEL_NAME_FINDER, ModelsFolder, "en-ner-organization.bin")
+	Dim PersonModel As Object = nlp.LoadModel(nlp.MODEL_NAME_FINDER, ModelsFolder, "en-ner-person.bin")
+	Dim DoccatModel As Object = nlp.LoadModel(nlp.MODEL_DOCUMENT_CATEGORIZER, ModelsFolder, "question_or_library.bin")
+	Dim POSModel As Object = nlp.LoadModel(nlp.MODEL_POS_TAGGER, ModelsFolder, "en-pos-maxent.bin")
+	Dim LemmatizerModel As Object = nlp.LoadModel(nlp.MODEL_LEMMATIZER, ModelsFolder, "en-lemmatizer.bin")
+	Dim paragraph As NLPParagraph = nlp.TokenizeLearnable(SentenceModel, TokenizerModel, s)
+	nlp.POSTagging(POSModel, paragraph)
+	nlp.Lemmatize(LemmatizerModel, paragraph)
+	Dim detokenizer As Object = nlp.LoadModel(nlp.MODEL_DETOKENIZER_RULES, ModelsFolder, "en-detokenizer-rules.txt")
+	Log(nlp.Detokenize(detokenizer, paragraph, "", CRLF))
+	Dim n As Long = DateTime.Now
+	nlp.FindNames(OrganizationModel, paragraph)
+	nlp.FindNames(PersonModel, paragraph)
+	Log(DateTime.Now - n): n = DateTime.now
+'	Dim docs As List = File.ReadList("C:\Users\H\Downloads\projects\ExtractForumDocuments\Objects\evaluate.txt", "")
+'	Dim Wrong As Int
+'	Dim n As Long = DateTime.Now
+'	Dim i As Int
+'	For Each Doc As String In docs
+'		CategorizeDocument(i, Doc, DoccatModel, SentenceModel)
+'		i = i + 1
+'		Exit
+'	Next
+'	Log(Wrong / docs.Size)
+	Log(DateTime.Now - n)
+End Sub
+
+Private Sub CategorizeDocument (i As Int, doc As String, Model As Object, sentencemodel As Object)
+	Log("in: " & i)
+	Dim w As Int = doc.IndexOf(" ")
+	Dim category As String = doc.SubString2(0, w)
+	RunningTasks = RunningTasks + 1
+	Dim paragraph As NLPParagraph = nlp.TokenizeWhitespace(sentencemodel, doc)
+	nlp.Categorize(Model, paragraph, False)
+	Log(category & ", " & paragraph.BestCategory.CategoryText & ", " & paragraph.BestCategory.Probability)
+	If category <> paragraph.BestCategory.CategoryText Then Wrong = Wrong + 1
+	Total = Total + 1
+	RunningTasks = RunningTasks - 1
+	Log(Total)
+End Sub
+
+

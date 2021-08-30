@@ -1,0 +1,4 @@
+DependsOn=JavaObject, OpenNLP\opennlp-tools-1.9.3.jar
+Supported Platforms=B4J
+Version=1.00
+Extra= {"PackagerProperty": { "IncludedModules": "java.xml" } }
