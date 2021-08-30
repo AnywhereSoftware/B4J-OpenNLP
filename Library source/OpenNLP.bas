@@ -6,7 +6,7 @@ Version=9.1
 @EndOfDesignText@
 'ide://run?file=%PROJECT%\build.bat&WorkingDirectory=%PROJECT%\
 'open the b4xlib manifest file with notepad++ ide://run?file=%COMSPEC%&args=/c&args=%PROJECT%\manifest.txt
-
+'github desktop ide://run?file=%WINDIR%\System32\cmd.exe&Args=/c&Args=github&Args=..\..\
 Sub Class_Globals
 	Private jMe As JavaObject
 	Type NLPLanguage (Language As String, Confidence As Double)
@@ -27,6 +27,9 @@ Public Sub Initialize
 	jMe = Me
 End Sub
 
+'Asynchronously loads a model.
+'ModelType - One of the MODEL constants.
+'<code>Wait For (nlp.LoadModelAsync(nlp.MODEL_TOKENIZER, File.DirAssets, "model-file.bin")) Complete (Model As Object)</code>
 Public Sub LoadModelAsync (ModelType As String, ModelDir As String, ModelFileName As String) As ResumableSub
 	Dim in As InputStream = File.OpenInput(ModelDir, ModelFileName)
 	Wait For (jMe.RunMethod("newInstanceAsync", Array(ModelType, Array(in)))) RunAsync_Complete (Success As Boolean, MODEL As Object)
@@ -34,6 +37,8 @@ Public Sub LoadModelAsync (ModelType As String, ModelDir As String, ModelFileNam
 	Return MODEL
 End Sub
 
+'Loads a model.
+'ModelType - One of the MODEL constants.
 Public Sub LoadModel (ModelType As String, ModelDir As String, ModelFileName As String) As Object
 	Dim jo As JavaObject
 	Dim in As InputStream = File.OpenInput(ModelDir, ModelFileName)
@@ -128,7 +133,7 @@ Private Sub GetSentencePOSTags(sen As NLPSentence) As String()
 	Return res
 End Sub
 
-'Name entity recognition. The found entities are added to Paragraph.Names.
+'Name entity recognition. The found entities (NLPNames) are added to Paragraph.Names.
 Public Sub FindNames(NameFinderModel As Object, Paragraph As NLPParagraph)
 	Dim finder As JavaObject
 	finder.InitializeNewInstance("opennlp.tools.namefind.NameFinderME", Array(NameFinderModel))
@@ -146,6 +151,8 @@ Public Sub FindNames(NameFinderModel As Object, Paragraph As NLPParagraph)
 End Sub
 
 'Categoriezes the document. Fills Paragraph.BestCategory and optionally Paragraph.Categories (if OnlyBestCategory = False).
+'Note that Paragraph.Categories is unsorted.
+'The text is treated as a single array of tokens.
 Public Sub Categorize(DoccatModel As Object, Paragraph As NLPParagraph, OnlyBestCategory As Boolean) 
 	Dim categorizer As JavaObject
 	categorizer.InitializeNewInstance("opennlp.tools.doccat.DocumentCategorizerME", Array(DoccatModel))
@@ -236,6 +243,7 @@ Public Sub POSTagging(Model As Object, Paragraph As NLPParagraph)
 End Sub
 
 'Lemmatizes the tokens. Fills the Lemma field of each token.
+'Depends on the POS tags, which means that you need to first call POSTagging.
 Public Sub Lemmatize(Model As Object, Paragraph As NLPParagraph)
 	Dim lemmataizer As JavaObject
 	lemmataizer.InitializeNewInstance("opennlp.tools.lemmatizer.LemmatizerME", Array(Model))
@@ -248,6 +256,7 @@ Public Sub Lemmatize(Model As Object, Paragraph As NLPParagraph)
 End Sub
 
 'Chunks the sentences. Fills the ChunkSpans field of each sentence.
+'Depends on the POS tags, which means that you need to first call POSTagging.
 Public Sub Chunk(Model As Object, Paragraph As NLPParagraph)
 	Dim chunker As JavaObject
 	chunker.InitializeNewInstance("opennlp.tools.chunker.ChunkerME", Array(Model))
